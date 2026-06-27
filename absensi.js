@@ -15,34 +15,175 @@ function toBase64(file){
 }
 
 async function submitAbsen(){
+
     try{
-        const now=new Date(); const today = now.toISOString().split("T")[0];
-        if(now.getDay()==0){ alert("Hari libur"); return; }
-        if(HARI_LIBUR.includes(today)){ alert("Hari libur nasional"); return; }
-        const file= document.getElementById("fotoAbsen").files[0];
-        if(!file){ alert("Foto wajib diisi"); return; }
+
+        const now = new Date();
+        const today = now.toISOString().split("T")[0];
+
+        if(now.getDay()==0){
+            alert("Hari libur");
+            return;
+        }
+
+        if(HARI_LIBUR.includes(today)){
+            alert("Hari libur nasional");
+            return;
+        }
+
+        const jenis = document.getElementById("jenisAbsen").value;
+
+        const file = document.getElementById("fotoAbsen").files[0];
+
+        // Foto hanya wajib saat absen masuk
+        if(jenis=="MASUK" && !file){
+            alert("Foto wajib diisi");
+            return;
+        }
 
         navigator.geolocation.getCurrentPosition(async(position)=>{
-            try{
-                const lat= position.coords.latitude; const lng= position.coords.longitude;
-                const jarak=getDistance(lat,lng,SEKOLAH_LAT,SEKOLAH_LNG);
-                if(jarak>500){ alert("Diluar radius sekolah"); return; }
-                lokasiStatus.innerHTML= "Jarak ke sekolah : "+ Math.round(jarak)+ " meter";
 
-                let statusKehadiran= "TEPAT WAKTU";
-                if(now.getHours()>7 || (now.getHours()==7 && now.getMinutes()>15)){ statusKehadiran= "TERLAMBAT"; }
-                const foto= await toBase64(file);
-                const payload={ action:"absenGuru", hari: now.toLocaleDateString("id-ID",{weekday:"long"}), tanggal: now.getDate(), bulan: now.toLocaleDateString("id-ID",{month:"long"}), nama: absenNama.value, kehadiran: kehadiran.value, masuk: now.toLocaleTimeString("id-ID"), pulang:"", statusKehadiran: statusKehadiran, foto:foto };
+            try{
+
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                const jarak = getDistance(
+                    lat,
+                    lng,
+                    SEKOLAH_LAT,
+                    SEKOLAH_LNG
+                );
+
+                if(jarak>500){
+                    alert("Diluar radius sekolah");
+                    return;
+                }
+
+                lokasiStatus.innerHTML =
+                    "Jarak ke sekolah : " +
+                    Math.round(jarak) +
+                    " meter";
+
+                let statusKehadiran = "TEPAT WAKTU";
+
+                if(
+                    now.getHours()>7 ||
+                    (
+                        now.getHours()==7 &&
+                        now.getMinutes()>15
+                    )
+                ){
+                    statusKehadiran="TERLAMBAT";
+                }
+
+                let foto = "";
+
+                if(jenis=="MASUK"){
+                    foto = await toBase64(file);
+                }
+
+                const payload = {
+
+                    action:"absenGuru",
+
+                    jenis:jenis,
+
+                    hari:now.toLocaleDateString(
+                        "id-ID",
+                        {weekday:"long"}
+                    ),
+
+                    tanggal:now.getDate(),
+
+                    bulan:now.toLocaleDateString(
+                        "id-ID",
+                        {month:"long"}
+                    ),
+
+                    nama:absenNama.value,
+
+                    kehadiran:kehadiran.value,
+
+                    masuk:
+                        jenis=="MASUK"
+                        ? now.toLocaleTimeString("id-ID")
+                        : "",
+
+                    pulang:
+                        jenis=="PULANG"
+                        ? now.toLocaleTimeString("id-ID")
+                        : "",
+
+                    statusKehadiran:statusKehadiran,
+
+                    foto:foto
+
+                };
 
                 const formData = new FormData();
-                Object.keys(payload).forEach(key=>{ formData.append(key,payload[key]); });
-                const response = await fetch(ABSEN_API, { method:"POST", body:formData });
+
+                Object.keys(payload).forEach(key=>{
+                    formData.append(key,payload[key]);
+                });
+
+                const response = await fetch(
+                    ABSEN_API,
+                    {
+                        method:"POST",
+                        body:formData
+                    }
+                );
+
                 const data = await response.json();
-                if(data.status){ alert(data.message || "Absensi berhasil"); fotoAbsen.value=""; } else { alert(data.message || "Absensi gagal"); }
-            }catch(err){ alert("Error:\n"+err); }
-        }, (err)=>{ alert("GPS gagal:\n"+ err.message); }, {enableHighAccuracy:true, timeout:15000, maximumAge:0});
-    }catch(err){ alert(err); }
+
+                if(data.status){
+
+                    alert(data.message);
+
+                    fotoAbsen.value="";
+
+                }else{
+
+                    alert(data.message);
+
+                }
+
+            }catch(err){
+
+                alert("Error\n"+err);
+
+            }
+
+        },
+        err=>{
+            alert("GPS gagal\n"+err.message);
+        },
+        {
+            enableHighAccuracy:true,
+            timeout:15000,
+            maximumAge:0
+        });
+
+    }catch(err){
+
+        alert(err);
+
+    }
+
 }
+
+document.getElementById("jenisAbsen").addEventListener("change", function(){
+
+    const fotoGroup = document.getElementById("fotoGroup");
+
+    if(this.value=="PULANG"){
+        fotoGroup.style.display="none";
+    }else{
+        fotoGroup.style.display="block";
+    }
+
+});
 
     async function loadFilterNamaSiswa(){
 
