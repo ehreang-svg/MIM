@@ -197,17 +197,18 @@
 
 <div id="rekapGuruPage" class="page hidden">
 
-    <button class="btn-small btn-back" onclick="goBack()">⬅ Kembali</button>
-
-    <h2 class="title">📊 REKAP ABSENSI GURU</h2>
+    <!-- ================= HEADER ================= -->
+    <div class="page-header">
+        <button class="btn-back" onclick="goBack()">⬅ Kembali</button>
+        <h2 class="title">📊 Rekap Absensi Guru</h2>
+    </div>
 
     <!-- ================= FILTER ================= -->
-
-    <div class="card">
+    <div class="card filter-card">
 
         <div class="filter-grid">
 
-            <div>
+            <div class="filter-item">
                 <label>Bulan</label>
                 <select id="filterBulan" onchange="loadRekap()">
                     <option value="">Semua Bulan</option>
@@ -226,7 +227,7 @@
                 </select>
             </div>
 
-            <div>
+            <div class="filter-item">
                 <label>Cari Guru</label>
                 <input
                     type="text"
@@ -235,26 +236,22 @@
                     onkeyup="searchRekap()">
             </div>
 
-            <div class="filter-button">
+            <div class="filter-actions">
 
-                <button class="btn-primary" onclick="loadRekap()">
+                <button class="btn btn-primary" onclick="loadRekap()">
                     🔄 Refresh
                 </button>
 
-                <button class="btn-success" onclick="exportPDF()">
+                <button class="btn btn-success" onclick="exportPDF()">
                     📄 Export PDF
                 </button>
-<div id="loading" style="display:none; position:fixed; top:20px; right:20px; background:#333; color:#fff; padding:10px; border-radius:8px;">
-  Loading...
-</div>
+
             </div>
 
         </div>
-
     </div>
 
-    <!-- ================= CARD STATISTIK ================= -->
-
+    <!-- ================= STATISTIK ================= -->
     <div class="stat-grid">
 
         <div class="stat-card blue">
@@ -279,68 +276,37 @@
 
     </div>
 
-    <!-- ================= LOADING ================= -->
-
-    <div id="loading" class="hidden">
-
-        <br>
-
-        <center>
-
-            <div class="loader"></div>
-
-            <br>
-
-            Memuat data...
-
-        </center>
-
+    <!-- ================= LOADING (HANYA 1) ================= -->
+    <div id="loading" class="loading-box" style="display:none;">
+        <div class="loader"></div>
+        <p>Memuat data...</p>
     </div>
 
-    <!-- ================= TABEL ================= -->
-
-    <div class="card">
+    <!-- ================= TABLE ================= -->
+    <div class="card table-card">
 
         <div class="table-responsive">
 
             <table id="rekapTable">
 
                 <thead>
-
                     <tr>
-
                         <th>No</th>
-
                         <th>Nama Guru</th>
-
                         <th>Hadir</th>
-
                         <th>Terlambat</th>
-
                         <th>Tidak Masuk</th>
-
-                        <th>% Kehadiran</th>
-
+                        <th>Kehadiran</th>
                         <th>Aksi</th>
-<button onclick="cetakGuru('Budi','Januari')" id="btnCetak">
-  Cetak PDF
-</button>
                     </tr>
-
                 </thead>
 
                 <tbody id="rekapBody">
-
                     <tr>
-
-                        <td colspan="7" align="center">
-
+                        <td colspan="7" class="empty-state">
                             Belum ada data
-
                         </td>
-
                     </tr>
-
                 </tbody>
 
             </table>
@@ -350,6 +316,7 @@
     </div>
 
 </div>
+
 <!-- REKAP SISWA -->
 <div class="page hidden" id="rekapSiswaPage">
 
