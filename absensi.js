@@ -173,17 +173,20 @@ async function submitAbsen(){
 
 }
 
-document.getElementById("jenisAbsen").addEventListener("change", function(){
+document.addEventListener("DOMContentLoaded", () => {
 
+    const jenisAbsen = document.getElementById("jenisAbsen");
     const fotoGroup = document.getElementById("fotoGroup");
 
-    if(this.value=="PULANG"){
-        fotoGroup.style.display="none";
-    }else{
-        fotoGroup.style.display="block";
+    function toggleFoto() {
+        fotoGroup.style.display = (jenisAbsen.value === "PULANG") ? "none" : "block";
     }
 
+    jenisAbsen.addEventListener("change", toggleFoto);
+    toggleFoto();
+
 });
+
 
     async function loadFilterNamaSiswa(){
 
