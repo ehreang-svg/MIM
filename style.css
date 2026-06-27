@@ -484,3 +484,72 @@ tr:hover td {
     .cardMD { padding: 20px; }
     .gridMD { grid-template-columns: 1fr; }
 }
+.card-absen{
+    max-width:420px;
+    margin:auto;
+    padding:25px;
+}
+
+.card-absen h2{
+    text-align:center;
+    margin-bottom:5px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    font-size:14px;
+    margin-bottom:20px;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+.form-group input,
+.form-group select{
+    width:100%;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    box-sizing:border-box;
+    font-size:15px;
+}
+
+.btn-absen{
+    width:100%;
+    padding:14px;
+    background:#16a34a;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.btn-absen:hover{
+    background:#15803d;
+}
+
+.lokasi-box{
+    margin-top:18px;
+    background:#eef7ff;
+    border-left:5px solid #2563eb;
+    padding:12px;
+    border-radius:8px;
+    font-size:14px;
+}
+
+#fotoGroup small{
+    display:block;
+    margin-top:5px;
+    color:#777;
+}
