@@ -194,33 +194,159 @@
 </div>
 </div>
 
-<!-- REKAP ABSEN -->
-<div class="page hidden" id="rekapPage">
-<div class="back" onclick="goBack()">← Kembali</div>
-<div class="card">
-<h2>Rekap Absensi Guru</h2>
-<br>
-<button onclick="exportPDF()">Export Rekap PDF</button>
-<br>
-<select id="filterBulan" onchange="loadRekap()">
-<option value="">Semua Bulan</option>
-<option>Januari</option>
-<option>Februari</option>
-<option>Maret</option>
-<option>April</option>
-<option>Mei</option>
-<option>Juni</option>
-<option>Juli</option>
-<option>Agustus</option>
-<option>September</option>
-<option>Oktober</option>
-<option>November</option>
-<option>Desember</option>
-</select>
-<div id="rekapBox"></div>
-</div>
-</div>
+<!-- ================= REKAP ABSENSI GURU ================= -->
 
+<div id="rekapGuruPage" class="page hidden">
+
+    <button class="btn-small btn-back" onclick="goBack()">⬅ Kembali</button>
+
+    <h2 class="title">📊 REKAP ABSENSI GURU</h2>
+
+    <!-- ================= FILTER ================= -->
+
+    <div class="card">
+
+        <div class="filter-grid">
+
+            <div>
+                <label>Bulan</label>
+                <select id="filterBulan" onchange="loadRekap()">
+                    <option value="">Semua Bulan</option>
+                    <option>Januari</option>
+                    <option>Februari</option>
+                    <option>Maret</option>
+                    <option>April</option>
+                    <option>Mei</option>
+                    <option>Juni</option>
+                    <option>Juli</option>
+                    <option>Agustus</option>
+                    <option>September</option>
+                    <option>Oktober</option>
+                    <option>November</option>
+                    <option>Desember</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Cari Guru</label>
+                <input
+                    type="text"
+                    id="searchGuru"
+                    placeholder="Cari nama guru..."
+                    onkeyup="searchRekap()">
+            </div>
+
+            <div class="filter-button">
+
+                <button class="btn-primary" onclick="loadRekap()">
+                    🔄 Refresh
+                </button>
+
+                <button class="btn-success" onclick="exportPDF()">
+                    📄 Export PDF
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= CARD STATISTIK ================= -->
+
+    <div class="stat-grid">
+
+        <div class="stat-card blue">
+            <div class="stat-title">Jumlah Guru</div>
+            <div id="statGuru" class="stat-value">0</div>
+        </div>
+
+        <div class="stat-card green">
+            <div class="stat-title">Total Hadir</div>
+            <div id="statHadir" class="stat-value">0</div>
+        </div>
+
+        <div class="stat-card orange">
+            <div class="stat-title">Terlambat</div>
+            <div id="statTerlambat" class="stat-value">0</div>
+        </div>
+
+        <div class="stat-card red">
+            <div class="stat-title">Tidak Masuk</div>
+            <div id="statTidakMasuk" class="stat-value">0</div>
+        </div>
+
+    </div>
+
+    <!-- ================= LOADING ================= -->
+
+    <div id="loadingRekap" class="hidden">
+
+        <br>
+
+        <center>
+
+            <div class="loader"></div>
+
+            <br>
+
+            Memuat data...
+
+        </center>
+
+    </div>
+
+    <!-- ================= TABEL ================= -->
+
+    <div class="card">
+
+        <div class="table-responsive">
+
+            <table id="rekapTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>No</th>
+
+                        <th>Nama Guru</th>
+
+                        <th>Hadir</th>
+
+                        <th>Terlambat</th>
+
+                        <th>Tidak Masuk</th>
+
+                        <th>% Kehadiran</th>
+
+                        <th>Aksi</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="rekapBody">
+
+                    <tr>
+
+                        <td colspan="7" align="center">
+
+                            Belum ada data
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
 <!-- REKAP SISWA -->
 <div class="page hidden" id="rekapSiswaPage">
 
