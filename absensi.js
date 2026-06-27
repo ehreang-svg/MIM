@@ -649,63 +649,46 @@ async function exportPDF(){
    CETAK SATU GURU
 ===================================================== */
 
-async function cetakGuru(nama){
+async function cetakGuru(nama, bulan){
 
-    try{
+  const btn = document.getElementById("btnCetak");
+  btn.disabled = true;
 
-        const bulan =
-            document.getElementById("filterBulan").value;
+  showLoading(true, "Membuat PDF...");
 
-        const response = await fetch(
+  try{
 
-            ABSEN_API,
+    const formData = new URLSearchParams();
+    formData.append("action", "cetakGuru");
+    formData.append("nama", nama);
+    formData.append("bulan", bulan);
 
-            {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: formData
+    });
 
-                method:"POST",
+    const data = await res.json();
 
-                body:new URLSearchParams({
+    if(data.status){
 
-                    action:"cetakGuru",
+      showNotif("PDF berhasil dibuat");
 
-                    nama:nama,
+      // buka otomatis
+      window.open(data.url, "_blank");
 
-                    bulan:bulan
-
-                })
-
-            }
-
-        );
-
-        const data = await response.json();
-
-        if(!data.status){
-
-            alert(data.message);
-
-            return;
-
-        }
-
-        window.open(
-
-            data.url,
-
-            "_blank"
-
-        );
-
+    }else{
+      showNotif("Gagal: " + data.message);
     }
 
-    catch(err){
+  }catch(err){
+    showNotif("Error koneksi server");
+  }
 
-        alert(err);
-
-    }
+  btn.disabled = false;
+  showLoading(false);
 
 }
-
 
 /* =====================================================
    FORMAT BULAN
@@ -1195,4 +1178,25 @@ async function exportPDFSiswa(){
         });
         doc.save("Rekap_Absensi_Siswa.pdf");
     }catch(err){ alert(err); }
+}
+
+function showLoading(state, text="Loading..."){
+  let el = document.getElementById("loading");
+
+  if(state){
+    el.style.display = "block";
+    el.innerText = text;
+  }else{
+    el.style.display = "none";
+  }
+}
+
+function showNotif(msg){
+  const n = document.getElementById("notif");
+  n.innerText = msg;
+  n.style.display = "block";
+
+  setTimeout(()=>{
+    n.style.display = "none";
+  }, 3000);
 }
