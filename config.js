@@ -14,3 +14,10 @@ let dataSiswaKognitif = [];
 let dataSoal=[];
 let dataIjazah = [];
 let dataIjazahMD = [];
+
+Object.assign(window, {
+    loadRekap,
+    searchRekap,
+    exportPDF,
+    cetakGuru
+});
