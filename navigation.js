@@ -25,8 +25,6 @@ const pages = [
     "editIdentitasPage",
     "dataSiswaPage",
     "exportIdentitasPage",
-   "ijazahPage",
-   "ijazahMDPage",
      "raportMDPage"
 ];
 /* ===========================
