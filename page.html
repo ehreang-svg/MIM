@@ -109,27 +109,57 @@
 
 <!-- ABSEN -->
 <div class="page hidden" id="absenGuruPage">
-<div class="back" onclick="goBack()">← Kembali</div>
-<div class="card">
-<h2>Absensi Guru</h2>
-<br>
-<select id="jenisAbsen">
-    <option value="MASUK">Masuk</option>
-    <option value="PULANG">Pulang</option>
-</select>
-<input id="absenNama" readonly>
-<input id="kehadiran" value="HADIR" readonly>
-    <select id="jenisAbsen">
-    <option value="MASUK">Masuk</option>
-    <option value="PULANG">Pulang</option>
-</select>
-<input type="file" id="fotoAbsen" accept="image/*" capture="environment">
-<button onclick="submitAbsen()">Absen Sekarang</button>
-<br><br>
-<div id="lokasiStatus"></div>
-</div>
-</div>
 
+    <div class="back" onclick="goBack()">
+        ← Kembali
+    </div>
+
+    <div class="card card-absen">
+
+        <h2>📋 Absensi Guru</h2>
+        <p class="subtitle">
+            Silakan lakukan absensi sesuai lokasi sekolah.
+        </p>
+
+        <div class="form-group">
+            <label>👤 Nama Guru</label>
+            <input id="absenNama" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>📌 Jenis Absensi</label>
+            <select id="jenisAbsen">
+                <option value="MASUK">🟢 Absen Masuk</option>
+                <option value="PULANG">🔴 Absen Pulang</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>✅ Kehadiran</label>
+            <input id="kehadiran" value="HADIR" readonly>
+        </div>
+
+        <div class="form-group" id="fotoGroup">
+            <label>📷 Foto Selfie</label>
+            <input
+                type="file"
+                id="fotoAbsen"
+                accept="image/*"
+                capture="environment">
+            <small>Foto hanya diperlukan saat absen masuk.</small>
+        </div>
+
+        <button class="btn-absen" onclick="submitAbsen()">
+            📍 Simpan Absensi
+        </button>
+
+        <div id="lokasiStatus" class="lokasi-box">
+            Menunggu lokasi...
+        </div>
+
+    </div>
+
+</div>
 <!-- ABSEN SISWA -->
 <div class="page hidden" id="absenSiswaPage">
 <div class="back" onclick="goBack()">← Kembali</div>
