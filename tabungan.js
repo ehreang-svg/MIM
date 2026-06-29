@@ -2,6 +2,8 @@ async function loadKelasTabungan() {
     try {
         const res = await fetch(TABUNGAN_API + "?action=getDataSiswa");
         const data = await res.json();
+        console.log(data);
+console.log(data.data);
 
         if (!data.status) {
             alert("Gagal memuat data siswa");
@@ -9,6 +11,7 @@ async function loadKelasTabungan() {
         }
 
         dataSiswaTabungan = data.data;
+        console.table(dataSiswaTabungan);
 
         const kelasUnik = [...new Set(data.data.map(x => x.kelas))].sort();
 
@@ -63,6 +66,7 @@ async function simpanTabungan() {
         });
 
         const hasil = await res.json();
+        console.log(hasil);
 
         alert(hasil.message);
 
@@ -102,7 +106,6 @@ function loadNamaTabungan() {
     });
 
 }
-
 async function loadFilterKelasTabungan(){
     try{
         const res = await fetch(TABUNGAN_API + "?action=getDataSiswa"); const data = await res.json(); if(!data.status) return;
