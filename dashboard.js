@@ -170,8 +170,8 @@ function canShowMenu(menuName, status){
 
 function canShowSubmenu(menuName, submenuName, status){
     menuName = menuName.toLowerCase(); submenuName = submenuName.toLowerCase(); status = status.toLowerCase();
-    if(status === "admin" || status === "wali kelas") return true;
-    if(status === "guru"){
+    if(status === "admin") return true;
+    if(status === "guru"| status === "wali kelas"){
         if(menuName === "materi" || menuName === "latihan") return true;
         if(menuName === "absensi") return (submenuName.includes("absen guru") || submenuName.includes("rekap absensi"));
         return false;
