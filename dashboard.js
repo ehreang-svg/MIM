@@ -45,18 +45,17 @@ console.log("Status =", res.status);
 console.log("Response URL =", res.url);
 
 const text = await res.text();
-console.log("Response =", text);
-
-const data = JSON.parse(text);
 
 if (!res.ok) {
-    const text = await res.text();
     console.error("HTTP Error:", res.status);
     console.error(text);
     alert("API Error " + res.status);
     return;
 }
 
+console.log("Response =", text);
+
+const data = JSON.parse(text);
 
 menuBox.innerHTML = "";
 
