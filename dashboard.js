@@ -36,21 +36,20 @@ async function loadDashboard(user){
 
         const url = API_URL + "?action=getMenus";
 
-        console.log("API_URL :", API_URL);
-        console.log("Request :", url);
+console.log("API_URL =", API_URL);
+console.log("URL =", API_URL + "?action=getMenus");
 
-        const res = await fetch(url);
+const res = await fetch(url);
 
-        if(!res.ok){
+console.log("Status =", res.status);
+console.log("Final URL =", res.url);
 
-            const text = await res.text();
+if(!res.ok){
+    const text = await res.text();
+    console.log(text);
+    alert("Status : " + res.status);
+    return;
 
-            console.error("HTTP Error :", res.status);
-            console.error(text);
-
-            alert("Gagal mengambil data menu");
-
-            return;
 
         }
 
