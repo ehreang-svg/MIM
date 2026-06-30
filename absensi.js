@@ -494,10 +494,10 @@ async function submitAbsenSiswa() {
 }
 
 async function loadRekapSiswa() {
-
     try {
-
         const bulan = filterBulanSiswa.value;
+        const kelasPilihan = document.getElementById("filterKelas").value; // Ambil nilai filter kelas
+        const namaPilihan = filterNamaSiswaRekap.value; // Ambil nilai filter nama jika ada
 
         const res = await fetch(
             ABSEN_API +
@@ -508,22 +508,32 @@ async function loadRekapSiswa() {
         const result = await res.json();
 
         if (!result.status) {
-
             alert(result.message);
             return;
-
         }
 
-        tampilRekapSiswa(result.rekap);
+        // ===================================================
+        // PROSES FILTERING DI FRONTEND
+        // ===================================================
+        let dataTerfilter = result.rekap;
+
+        // Filter berdasarkan kelas jika kelas dipilih
+        if (kelasPilihan) {
+            dataTerfilter = dataTerfilter.filter(x => x.kelas === kelasPilihan);
+        }
+
+        // Filter berdasarkan nama jika nama tertentu dipilih
+        if (namaPilihan) {
+            dataTerfilter = dataTerfilter.filter(x => x.nama === namaPilihan);
+        }
+
+        // Tampilkan data yang sudah menyusut/terfilter ke tabel
+        tampilRekapSiswa(dataTerfilter);
 
     } catch (err) {
-
         alert(err);
-
     }
-
 }
-
 function tampilRekapSiswa(data) {
 
     let html = `
