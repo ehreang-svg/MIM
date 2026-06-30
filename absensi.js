@@ -1,4 +1,5 @@
 /* ================= ABSENSI GURU ================= */
+
 const SEKOLAH_LAT = -6.5437149;
 const SEKOLAH_LNG = 108.4291139;
 
