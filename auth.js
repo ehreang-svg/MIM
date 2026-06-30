@@ -45,11 +45,23 @@ function cekLogin(){
 function logout(){ localStorage.clear(); location.reload(); }
 
 function canShowMenu(menuName, status){
-    menuName = menuName.toLowerCase(); status = status.toLowerCase();
-    if(status === "admin"; status === "Kepala Sekolah") return true;
-    if(status === "wali kelas") return ["absensi","raport","materi","latihan"].includes(menuName);
-    if(status === "guru") return ["absensi","materi","latihan"].includes(menuName);
-    if(status === "siswa") return ["tabungan","materi","latihan","absensi"].includes(menuName);
+    menuName = menuName.toLowerCase();
+    status = status.toLowerCase();
+
+    if (
+        status === "admin" ||
+        status === "kepala sekolah"
+    ) return true;
+
+    if(status === "wali kelas")
+        return ["absensi","raport","materi","latihan"].includes(menuName);
+
+    if(status === "guru")
+        return ["absensi","materi","latihan"].includes(menuName);
+
+    if(status === "siswa")
+        return ["tabungan","materi","latihan","absensi"].includes(menuName);
+
     return false;
 }
 
