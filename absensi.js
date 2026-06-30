@@ -632,3 +632,140 @@ function loadFilterNamaSiswa() {
     });
 
 }
+
+function tampilRekapSiswa(data){
+
+    let html = `
+    <table class="table">
+
+    <thead>
+    <tr>
+        <th>No</th>
+        <th>Nama</th>
+        <th>Kelas</th>
+        <th>Hadir</th>
+        <th>Izin</th>
+        <th>Sakit</th>
+        <th>Terlambat</th>
+        <th>%</th>
+        <th>Aksi</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    `;
+
+    data.forEach((x,i)=>{
+
+        const persen =
+            Math.round((x.hadir/22)*100);
+
+        html += `
+        <tr>
+
+        <td>${i+1}</td>
+        <td>${x.nama}</td>
+        <td>${x.kelas}</td>
+        <td>${x.hadir}</td>
+        <td>${x.izin}</td>
+        <td>${x.sakit}</td>
+        <td>${x.terlambat}</td>
+        <td>${persen}%</td>
+
+        <td>
+
+        <button
+        onclick="cetakSiswa(
+        '${x.nama}',
+        '${document.getElementById("filterBulanSiswa").value}'
+        )">
+
+        📄 Cetak
+
+        </button>
+
+        </td>
+
+        </tr>
+        `;
+
+    });
+
+    html += `
+    </tbody>
+    </table>
+    `;
+
+    rekapSiswaBox.innerHTML = html;
+
+}
+
+async function cetakSiswa(nama,bulan){
+
+    const res = await fetch(ABSEN_API,{
+
+        method:"POST",
+
+        body:new URLSearchParams({
+
+            action:"exportSiswaPDF",
+
+            nama:nama,
+
+            bulan:bulan
+
+        })
+
+    });
+
+    const data = await res.json();
+
+    if(data.status){
+
+        window.open(data.url,"_blank");
+
+    }else{
+
+        alert(data.message);
+
+    }
+
+}
+
+async function exportPDFSiswa(){
+
+    const bulan =
+        document.getElementById("filterBulanSiswa").value;
+
+    const kelas =
+        document.getElementById("filterKelas").value;
+
+    const res = await fetch(ABSEN_API,{
+
+        method:"POST",
+
+        body:new URLSearchParams({
+
+            action:"exportRekapSiswaPDF",
+
+            bulan:bulan,
+
+            kelas:kelas
+
+        })
+
+    });
+
+    const data = await res.json();
+
+    if(data.status){
+
+        window.open(data.url,"_blank");
+
+    }else{
+
+        alert(data.message);
+
+    }
+
+}
