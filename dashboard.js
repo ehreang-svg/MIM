@@ -1,74 +1,106 @@
 async function loadDashboard(user){
 
-currentUser = user;
+    try{
 
-nav("dashboard");
+        currentUser = user;
 
-if(window.nama)
-    nama.innerText = user.nama;
+        nav("dashboard");
 
-if(window.kelas)
-    kelas.innerText = user.kelas || "";
+        if(window.nama)
+            nama.innerText = user.nama;
 
-const statusEl =
-    document.getElementById("status");
+        if(window.kelas)
+            kelas.innerText = user.kelas || "";
 
-if(statusEl)
-    statusEl.textContent =
-        user.status || "-";
+        const statusEl = document.getElementById("status");
 
-const targetFoto =
-    document.getElementById("foto");
+        if(statusEl)
+            statusEl.textContent = user.status || "-";
 
-if(targetFoto){
+        const targetFoto = document.getElementById("foto");
 
-    targetFoto.src =
-        user.foto ||
-        "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+        if(targetFoto){
 
-    targetFoto.onerror = function(){
+            targetFoto.src =
+                user.foto ||
+                "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
-        this.src =
-            "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+            targetFoto.onerror = function(){
 
-    };
+                this.src =
+                    "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+            };
+
+        }
+
+        const url = API_URL + "?action=getMenus";
+
+        console.log("API_URL :", API_URL);
+        console.log("Request :", url);
+
+        const res = await fetch(url);
+
+        if(!res.ok){
+
+            const text = await res.text();
+
+            console.error("HTTP Error :", res.status);
+            console.error(text);
+
+            alert("Gagal mengambil data menu");
+
+            return;
+
+        }
+
+        const data = await res.json();
+
+        console.log(data);
+
+        if(!data.menus || !Array.isArray(data.menus)){
+
+            console.error("Response tidak valid", data);
+
+            alert("Data menu tidak valid");
+
+            return;
+
+        }
+
+        menuBox.innerHTML = "";
+
+        data.menus
+            .filter(m =>
+                canShowMenu(
+                    m.name,
+                    user.status || ""
+                )
+            )
+            .forEach(m => {
+
+                menuBox.innerHTML += `
+                    <div class="menu-card"
+                         onclick="openMenu('${m.id}','${m.name}')">
+                        <img src="${m.icon}">
+                        <div>${m.name}</div>
+                    </div>
+                `;
+
+            });
+
+        loadJadwalSekarang();
+
+    }catch(err){
+
+        console.error("loadDashboard Error :", err);
+
+        alert("Terjadi kesalahan : " + err.message);
+
+    }
+
 }
 
-const url = API_URL + "?action=getMenus";
-
-console.log("API_URL =", API_URL);
-console.log("URL =", url);
-
-const res = await fetch(url);
-
-if (!res.ok) {
-    alert("API Error " + res.status);
-    return;
-}
-
-const data = await res.json();
-menuBox.innerHTML = "";
-
-data.menus
-    .filter(m =>
-        canShowMenu(
-            m.name,
-            (user.status || "")
-        )
-    )
-    .forEach(m => {
-
-        menuBox.innerHTML += `
-        <div class="menu-card"
-             onclick="openMenu('${m.id}','${m.name}')">
-            <img src="${m.icon}">
-            <div>${m.name}</div>
-        </div>`;
-    });
-
-loadJadwalSekarang();
-
-}
 async function loadJadwalSekarang(){
     try{
         const res = await fetch(JADWAL_API + "?action=jadwalSekarang");
