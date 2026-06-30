@@ -173,7 +173,7 @@ function canShowSubmenu(menuName, submenuName, status){
     if(status === "admin") return true;
     if(status === "guru"|| status === "wali kelas"){
         if(menuName === "materi" || menuName === "latihan") return true;
-        if(menuName === "absensi") return (submenuName.includes("absen guru") || submenuName.includes("rekap absensi"));
+        if(menuName === "absensi") return (submenuName.includes("absen guru") ||submenuName.includes("absen siswa") ||submenuName.includes("rekap siswa") || submenuName.includes("rekap absensi"));
         return false;
     }
     if(status === "siswa"){
