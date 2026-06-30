@@ -34,7 +34,20 @@ if(targetFoto){
     };
 }
 
-let res = await fetch(API_URL + "?action=getMenus");
+const url = API_URL + "?action=getMenus";
+
+console.log("API_URL =", API_URL);
+console.log("URL =", url);
+
+const res = await fetch(url);
+
+console.log("Status =", res.status);
+console.log("Response URL =", res.url);
+
+const text = await res.text();
+console.log("Response =", text);
+
+const data = JSON.parse(text);
 
 if (!res.ok) {
     const text = await res.text();
