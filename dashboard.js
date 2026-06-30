@@ -161,26 +161,56 @@ async function handleSubmenu(type, value, title) {
 
 
 function canShowMenu(menuName, status){
-    menuName = menuName.toLowerCase(); status = status.toLowerCase();
-    if(status === "admin") return true;
-    if(status === "guru"||status==="wali kelas") return ["absensi","materi","latihan"].includes(menuName);
-    if(status === "siswa") return ["tabungan","materi","latihan","absensi"].includes(menuName);
+    menuName = menuName.toLowerCase();
+    status = status.toLowerCase();
+
+    if(status === "admin" || status === "kepala sekolah") return true;
+
+    if(status === "guru" || status === "wali kelas")
+        return ["absensi","materi","latihan"].includes(menuName);
+
+    if(status === "siswa")
+        return ["tabungan","materi","latihan","absensi"].includes(menuName);
+
     return false;
 }
 
 function canShowSubmenu(menuName, submenuName, status){
-    menuName = menuName.toLowerCase(); submenuName = submenuName.toLowerCase(); status = status.toLowerCase();
-    if(status === "admin"||status === "Kepala Sekolah") return true;
-    if(status === "guru"|| status === "wali kelas"){
-        if(menuName === "materi" || menuName === "latihan") return true;
-        if(menuName === "absensi") return (submenuName.includes("absen guru") ||submenuName.includes("absen siswa") ||submenuName.includes("rekap siswa") || submenuName.includes("rekap absensi"));
+    menuName = menuName.toLowerCase();
+    submenuName = submenuName.toLowerCase();
+    status = status.toLowerCase();
+
+    if(status === "admin" || status === "kepala sekolah")
+        return true;
+
+    if(status === "guru" || status === "wali kelas"){
+        if(menuName === "materi" || menuName === "latihan")
+            return true;
+
+        if(menuName === "absensi"){
+            return submenuName.includes("absen guru") ||
+                   submenuName.includes("absen siswa") ||
+                   submenuName.includes("rekap siswa") ||
+                   submenuName.includes("rekap absensi");
+        }
+
         return false;
     }
+
     if(status === "siswa"){
-        if(menuName === "materi" || menuName === "latihan") return true;
-        if(menuName === "tabungan") return submenuName.includes("lihat tabungan");
-        if(menuName === "absensi") return (submenuName.includes("rekap siswa") || submenuName.includes("rekap absensi siswa"));
+        if(menuName === "materi" || menuName === "latihan")
+            return true;
+
+        if(menuName === "tabungan")
+            return submenuName.includes("lihat tabungan");
+
+        if(menuName === "absensi"){
+            return submenuName.includes("rekap siswa") ||
+                   submenuName.includes("rekap absensi siswa");
+        }
+
         return false;
     }
+
     return false;
 }
