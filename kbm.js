@@ -52,13 +52,16 @@ const aplikasi = {
     const fStatus = document.getElementById('filterStatus').value;
 
     let filtered = this.masterData.filter(item => {
-      // Kebal terhadap teks "Kelas 1" maupun angka "1"
+      // 1. Ambil angka kelas saja dari spreadsheet (kebal terhadap tulisan "Kelas 1" atau angka "1")
       const angkaKelasSaja = String(item.kelas || '').toLowerCase().replace('kelas', '').trim();
       const matchKelas = (fKelas === "Semua" || angkaKelasSaja === fKelas);
       
-      const matchPelajaran = (fPelajaran === "Semua" || 
-        String(item.pelajaran || '').toLowerCase().trim() === fPelajaran.toLowerCase().trim());
+      // 2. Filter Pelajaran menggunakan .includes() agar lebih fleksibel terhadap spasi/teks tambahan
+      const mapelTarget = String(item.pelajaran || '').toLowerCase().trim();
+      const mapelFilter = fPelajaran.toLowerCase().trim();
+      const matchPelajaran = (fPelajaran === "Semua" || mapelTarget.includes(mapelFilter) || mapelFilter.includes(mapelTarget));
       
+      // 3. Filter Status Belajar
       let matchStatus = false;
       if (fStatus === "Semua") {
         matchStatus = true;
@@ -72,17 +75,22 @@ const aplikasi = {
       return matchKelas && matchPelajaran && matchStatus;
     });
 
-    // PENGAMAN SAPU JAGAT: Jika hasil filter kosong padahal masterData ada isinya, 
-    // paksa tampilkan semua data asli tanpa filter agar tabel tidak kosong!
-    if (filtered.length === 0 && this.masterData.length > 0) {
-      console.warn("Filter terlalu ketat. Memaksa mode bypass data asli.");
-      filtered = this.masterData;
-    }
+    // JIKA filter menghasilkan data, matikan mode bypass agar penyaringan bekerja normal
+    // JIKA hasil filter benar-benar 0 baru sistem akan memunculkan emptyState
+    const totalSemuaData = this.masterData.length;
 
-    // Hitung Statistik
+    // Hitung Statistik Berdasarkan Hasil Filter yang Valid
     const total = filtered.length;
-    const selesai = filtered.filter(i => String(i.status).toLowerCase().includes("selesai")).length;
-    const proses = filtered.filter(i => String(i.status).toLowerCase().includes("proses")).length;
+    const selesai = filtered.filter(i => {
+      const s = String(i.status || '').toLowerCase();
+      return s.includes("selesai") || s.includes("paham") || s.includes("🟢");
+    }).length;
+    
+    const proses = filtered.filter(i => {
+      const s = String(i.status || '').toLowerCase();
+      return s.includes("proses") || s.includes("dibaca") || s.includes("🟡");
+    }).length;
+    
     const persen = total > 0 ? Math.round((selesai / total) * 100) : 0;
 
     document.getElementById('statTotal').innerText = total;
@@ -103,19 +111,24 @@ const aplikasi = {
       if(emptyState) emptyState.classList.add('hidden');
     }
 
+    // Render data hasil filter ke tabel HTML
     filtered.forEach((item) => {
       const tr = document.createElement('tr');
       const sStr = String(item.status || '').toLowerCase();
       
+      const isBelum = sStr.includes('belum') || sStr.includes('🔴');
+      const isProses = sStr.includes('proses') || sStr.includes('dibaca') || sStr.includes('🟡');
+      const isSelesai = sStr.includes('selesai') || sStr.includes('paham') || sStr.includes('🟢');
+
       tr.innerHTML = `
         <td class="text-center font-bold text-slate-600 py-3 px-4">${item.kelas || '-'}</td>
         <td class="font-semibold text-slate-700 py-3 px-4">${item.pelajaran || '-'}</td>
         <td class="text-slate-800 font-medium py-3 px-4">${item.materi || '-'}</td>
         <td class="text-center py-3 px-4">
           <select onchange="aplikasi.ubahStatus(${item.rowNumber}, this.value)" class="w-full text-sm rounded border border-slate-300 p-1 bg-white">
-            <option value="🔴 Belum" ${sStr.includes('belum') ? 'selected' : ''}>🔴 Belum</option>
-            <option value="🟡 Proses" ${sStr.includes('proses') ? 'selected' : ''}>🟡 Proses</option>
-            <option value="🟢 Selesai" ${sStr.includes('selesai') ? 'selected' : ''}>🟢 Selesai</option>
+            <option value="🔴 Belum" ${isBelum ? 'selected' : ''}>🔴 Belum</option>
+            <option value="🟡 Proses" ${isProses ? 'selected' : ''}>🟡 Proses</option>
+            <option value="🟢 Selesai" ${isSelesai ? 'selected' : ''}>🟢 Selesai</option>
           </select>
         </td>
         <td class="py-3 px-4">
@@ -126,7 +139,6 @@ const aplikasi = {
       tbody.appendChild(tr);
     });
   },
-
   ubahStatus: function(rowNumber, newStatus) {
     this.showLoading(true);
     if (window.KBM_API) {
