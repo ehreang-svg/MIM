@@ -48,26 +48,29 @@ const aplikasi = {
     }
   },
 
-  filterDanTampilkan: function() {
-    // 1. Tangkap elemen HTML secara aman
-    const elKelas = document.getElementById('filterKelas');
-    const elPelajaran = document.getElementById('filterPelajaran');
-    const elStatus = document.getElementById('filterStatus');
+  filterDanTampilkan: function(elementYangDiklik) {
+    // 1. Ambil nilai default dari DOM terlebih dahulu
+    let fKelas = document.getElementById('filterKelas') ? document.getElementById('filterKelas').value : "Semua";
+    let fPelajaran = document.getElementById('filterPelajaran') ? document.getElementById('filterPelajaran').value : "Semua";
+    let fStatus = document.getElementById('filterStatus') ? document.getElementById('filterStatus').value : "Semua";
 
-    // 2. Ambil nilai seleksi pengguna (jika elemen tidak ditemukan, default ke "Semua")
-    let fKelas = elKelas ? elKelas.value : "Semua";
-    let fPelajaran = elPelajaran ? elPelajaran.value : "Semua";
-    let fStatus = elStatus ? elStatus.value : "Semua";
+    // 2. JIKA fungsi ini dipicu oleh klik user (elementYangDiklik ada isinya), 
+    // paksa timpa nilainya secara akurat berdasarkan ID elemen yang memicunya!
+    if (elementYangDiklik && elementYangDiklik.id) {
+      if (elementYangDiklik.id === "filterKelas") fKelas = elementYangDiklik.value;
+      if (elementYangDiklik.id === "filterPelajaran") fPelajaran = elementYangDiklik.value;
+      if (elementYangDiklik.id === "filterStatus") fStatus = elementYangDiklik.value;
+    }
 
-    // PENGAMAN TAMBAHAN: Jika terdeteksi bug di mana value HTML kosong atau 'undefined'
+    // Pembersihan nilai jika kosong/undefined
     if (!fKelas || fKelas.trim() === "" || fKelas === "undefined") fKelas = "Semua";
     if (!fPelajaran || fPelajaran.trim() === "" || fPelajaran === "undefined") fPelajaran = "Semua";
     if (!fStatus || fStatus.trim() === "" || fStatus === "undefined") fStatus = "Semua";
 
-    console.log(`Menjalankan filter -> Kelas: ${fKelas}, Mapel: ${fPelajaran}, Status: ${fStatus}`);
+    console.log(`[Pemicu Aktual] Menjalankan filter -> Kelas: ${fKelas}, Mapel: ${fPelajaran}, Status: ${fStatus}`);
 
     let filtered = this.masterData.filter(item => {
-      // A. Ekstrak angka saja dari kolom kelas spreadsheet (misal "Kelas 1" -> "1", "1" -> "1")
+      // A. Ekstrak angka kelas saja dari spreadsheet
       const angkaKelasSaja = String(item.kelas || '').replace(/\D/g, '').trim(); 
       const matchKelas = (fKelas === "Semua" || angkaKelasSaja === fKelas);
       
@@ -90,16 +93,13 @@ const aplikasi = {
       return matchKelas && matchPelajaran && matchStatus;
     });
 
-    // PENGAMAN LIFE-CYCLE: Hanya bypass semua data jika ini benar-benar loading pertama kali aplikasi dibuka
+    // Jalankan sistem normal filter (Bypass dimatikan jika user mengubah filter secara sadar)
     if (this.isFirstLoad && filtered.length === 0 && this.masterData.length > 0) {
-      console.warn("Kondisi awal tidak sinkron, menampilkan seluruh data asli.");
       filtered = this.masterData;
     }
-    
-    // Setelah eksekusi pertama selesai, kunci isFirstLoad ke false secara permanen
     this.isFirstLoad = false;
 
-    // Perbarui Angka Statistik Real-time
+    // Perbarui Angka Statistik
     const total = filtered.length;
     const selesai = filtered.filter(i => {
       const s = String(i.status || '').toLowerCase();
@@ -159,7 +159,7 @@ const aplikasi = {
       tbody.appendChild(tr);
     });
   },
-
+  
   ubahStatus: function(rowNumber, newStatus) {
     this.showLoading(true);
     if (window.KBM_API) {
