@@ -49,23 +49,28 @@ const aplikasi = {
   },
 
   filterDanTampilkan: function() {
-    const fKelas = document.getElementById('filterKelas').value;
+    // 1. Ambil nilai filter Kelas & amankan jika bernilai kosong ("")
+    let fKelas = document.getElementById('filterKelas').value;
+    if (!fKelas || fKelas.trim() === "") {
+      fKelas = "Semua";
+    }
+    
     const fPelajaran = document.getElementById('filterPelajaran').value;
     const fStatus = document.getElementById('filterStatus').value;
 
     console.log(`Menjalankan filter -> Kelas: ${fKelas}, Mapel: ${fPelajaran}, Status: ${fStatus}`);
 
     let filtered = this.masterData.filter(item => {
-      // 1. Ekstrak angka saja dari kolom kelas (Bisa menangani "Kelas 1" maupun angka "1" langsung)
+      // A. Ekstrak angka saja dari kolom kelas spreadsheet (mengubah "Kelas 1" menjadi "1")
       const angkaKelasSaja = String(item.kelas || '').replace(/\D/g, '').trim(); 
       const matchKelas = (fKelas === "Semua" || angkaKelasSaja === fKelas);
       
-      // 2. Filter Pelajaran (Pencarian fleksibel sebagian karakter / case-insensitive)
+      // B. Filter Pelajaran (Pencarian fleksibel sebagian karakter / case-insensitive)
       const mapelTarget = String(item.pelajaran || '').toLowerCase().trim();
       const mapelFilter = fPelajaran.toLowerCase().trim();
       const matchPelajaran = (fPelajaran === "Semua" || mapelTarget.includes(mapelFilter) || mapelFilter.includes(mapelTarget));
       
-      // 3. Filter Status Belajar (Membaca teks murni ataupun emoji pendukung)
+      // C. Filter Status Belajar (Membaca teks murni ataupun emoji pendukung)
       let matchStatus = false;
       if (fStatus === "Semua") {
         matchStatus = true;
@@ -79,16 +84,16 @@ const aplikasi = {
       return matchKelas && matchPelajaran && matchStatus;
     });
 
-    // PENGAMAN JIKA BARU PERTAMA KALI LOAD DAN FILTER GAGAL KARENA FORMAT SPREADSHEET
+    // PENGAMAN BERDASARKAN LIFE-CYCLE LOAD PERTAMA
     if (this.isFirstLoad && filtered.length === 0 && this.masterData.length > 0) {
       console.warn("Kondisi awal tidak sinkron, menampilkan seluruh data asli.");
       filtered = this.masterData;
     }
     
-    // Matikan status load pertama setelah filter dijalankan sekali atau diubah manual
+    // Matikan status load pertama setelah filter dijalankan atau diubah manual oleh pengguna
     this.isFirstLoad = false;
 
-    // Perbarui Angka Statistik Real-time
+    // Perbarui Angka Statistik Real-time Dashboard KBM
     const total = filtered.length;
     const selesai = filtered.filter(i => {
       const s = String(i.status || '').toLowerCase();
@@ -113,7 +118,7 @@ const aplikasi = {
     if(!tbody) return;
     tbody.innerHTML = "";
 
-    // Jika benar-benar tidak ada data yang cocok setelah difilter user
+    // Jika benar-benar tidak ada data yang cocok setelah difilter oleh user
     if (filtered.length === 0) {
       if(emptyState) emptyState.classList.remove('hidden');
       return;
