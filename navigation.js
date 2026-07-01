@@ -28,6 +28,7 @@ const pages = [
    "materiPage",
    "ijazahPage",
    "ijazahMDPage",
+   "siswaMateriPage",
      "raportMDPage"
 ];
 /* ===========================
@@ -68,7 +69,12 @@ function nav(id) {
 
     currentPage = id;
     show(id);
-
+   // Tambahkan pengait siklus hidup halaman siswa di navigation.js
+    if (id === "siswaMateriPage" && typeof siswaAplikasi !== "undefined") {
+        console.log("Siswa masuk ke Ruang Belajar Mandiri...");
+        siswaAplikasi.init();
+    }
+   
    if (id === "materiPage" && typeof aplikasi !== "undefined" && typeof aplikasi.init === "function") {
         aplikasi.init();
     }
