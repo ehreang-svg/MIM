@@ -69,6 +69,9 @@ function nav(id) {
     currentPage = id;
     show(id);
 
+   if (id === "materiPage" && typeof aplikasi !== "undefined" && typeof aplikasi.init === "function") {
+        aplikasi.init();
+    }
     // lifecycle hooks
     if (
     id === "kognitifPage" &&
