@@ -495,7 +495,7 @@ async function cetakKwitansi() {
 
         doc.setFontSize(8);
         doc.setFont("courier", "bold");
-        doc.text("YAYASAN AMANNA", pageW / 2, 17, { align: "center" });
+        doc.text("MIS MIFTAHUL MUBTADIIN", pageW / 2, 17, { align: "center" });
 
         y = 28;
 
@@ -555,7 +555,7 @@ async function cetakKwitansi() {
         y += 5;
         doc.setFontSize(7);
         doc.text(
-            "Dicetak otomatis oleh sistem Yayasan Amanna",
+            "Dicetak otomatis oleh sistem MIS MIftahul Mubtadiin",
             pageW / 2,
             doc.internal.pageSize.getHeight() - 6,
             { align: "center" }
@@ -587,7 +587,7 @@ async function exportBukuTabungan() {
     const saldoPerHari = {}; let saldo = 0;
     for (let i = 1; i <= 31; i++) { if (transaksi[i]) { saldo += transaksi[i]; saldoPerHari[i] = saldo; } else { saldoPerHari[i] = null; } }
 
-    doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.text("YAYASAN AMANNA", 7.5, 0.8, { align: "center" });
+    doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.text("MIS MIFTAHUL MUBTADIIN", 7.5, 0.8, { align: "center" });
     doc.setFontSize(8); doc.text("BUKU TABUNGAN SISWA", 7.5, 1.2, { align: "center" });
     doc.setFont("helvetica", "normal"); doc.text(`Nama  : ${nama}`, 0.6, 1.8); doc.text(`Kelas : ${kelas}`, 0.6, 2.2); doc.text(`Bulan : ${bulanText}`, 0.6, 2.6);
     doc.setDrawColor(210); doc.setLineWidth(0.004); const yStart = 3.0; doc.rect(0.5, yStart, 14, 6.6); const mid = 7.5; doc.line(mid, yStart, mid, yStart + 6.6);
