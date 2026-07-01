@@ -16,13 +16,14 @@ const aplikasi = {
     }
   },
 
-  muatDataDariSheets: function() {
+muatDataDariSheets: function() {
     this.showLoading(true);
 
-    // CEK: Apakah dijalankan di server Google?
-    if (typeof google !== 'undefined' && google.script && google.script.run) {
-      google.script.run
-        .withSuccessHandler((response) => {
+    // Jika berjalan di hosting luar dan menggunakan API URL kustom
+    if (window.KBM_API) {
+      fetch(`${window.KBM_API}?action=getMateriData`)
+        .then(res => res.json())
+        .then(response => {
           if(response.success) {
             this.masterData = response.data;
             this.filterDanTampilkan();
@@ -31,24 +32,20 @@ const aplikasi = {
           }
           this.showLoading(false);
         })
-        .withFailureHandler((err) => {
-          alert("Sistem Error backend GAS: " + err);
+        .catch(err => {
+          alert("Sistem Error API: " + err);
           this.showLoading(false);
-        })
-        .getMateriData();
+        });
     } else {
-      // JIKA TIDAK (Uji coba lokal) -> Gunakan data simulasi agar tidak error
-      console.warn("Membuka di komputer lokal. Mengaktifkan data simulasi (Mock Data)...");
-      
+      // Mock data cadangan jika API belum diisi
+      console.warn("API KBM tidak ditemukan, mengaktifkan data simulasi...");
       setTimeout(() => {
         this.masterData = [
-          { rowNumber: 2, kelas: 1, pelajaran: "Matematika", materi: "Mengenal Angka 1-20 (Simulasi Lokal)", status: "🔴 Belum", catatan: "" },
-          { rowNumber: 3, kelas: 1, pelajaran: "Bahasa Indonesia", materi: "Mengenal Huruf Alfabet (Simulasi Lokal)", status: "🟡 Proses", catatan: "Buku Paket Hal 5" },
-          { rowNumber: 4, kelas: 6, pelajaran: "IPA (IPAS)", materi: "Sistem Tata Surya & Planet (Simulasi Lokal)", status: "🟢 Selesai", catatan: "YouTube Edukasi" }
+          { rowNumber: 2, kelas: 1, pelajaran: "Matematika", materi: "Mengenal Angka 1-20 (Simulasi)", status: "🔴 Belum", catatan: "" }
         ];
         this.filterDanTampilkan();
         this.showLoading(false);
-      }, 800);
+      }, 500);
     }
   },
 
