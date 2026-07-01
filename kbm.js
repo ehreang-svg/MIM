@@ -49,28 +49,34 @@ const aplikasi = {
   },
 
   filterDanTampilkan: function() {
-    // 1. Ambil nilai filter Kelas & amankan jika bernilai kosong ("")
-    let fKelas = document.getElementById('filterKelas').value;
-    if (!fKelas || fKelas.trim() === "") {
-      fKelas = "Semua";
-    }
-    
-    const fPelajaran = document.getElementById('filterPelajaran').value;
-    const fStatus = document.getElementById('filterStatus').value;
+    // 1. Tangkap elemen HTML secara aman
+    const elKelas = document.getElementById('filterKelas');
+    const elPelajaran = document.getElementById('filterPelajaran');
+    const elStatus = document.getElementById('filterStatus');
+
+    // 2. Ambil nilai seleksi pengguna (jika elemen tidak ditemukan, default ke "Semua")
+    let fKelas = elKelas ? elKelas.value : "Semua";
+    let fPelajaran = elPelajaran ? elPelajaran.value : "Semua";
+    let fStatus = elStatus ? elStatus.value : "Semua";
+
+    // PENGAMAN TAMBAHAN: Jika terdeteksi bug di mana value HTML kosong atau 'undefined'
+    if (!fKelas || fKelas.trim() === "" || fKelas === "undefined") fKelas = "Semua";
+    if (!fPelajaran || fPelajaran.trim() === "" || fPelajaran === "undefined") fPelajaran = "Semua";
+    if (!fStatus || fStatus.trim() === "" || fStatus === "undefined") fStatus = "Semua";
 
     console.log(`Menjalankan filter -> Kelas: ${fKelas}, Mapel: ${fPelajaran}, Status: ${fStatus}`);
 
     let filtered = this.masterData.filter(item => {
-      // A. Ekstrak angka saja dari kolom kelas spreadsheet (mengubah "Kelas 1" menjadi "1")
+      // A. Ekstrak angka saja dari kolom kelas spreadsheet (misal "Kelas 1" -> "1", "1" -> "1")
       const angkaKelasSaja = String(item.kelas || '').replace(/\D/g, '').trim(); 
       const matchKelas = (fKelas === "Semua" || angkaKelasSaja === fKelas);
       
-      // B. Filter Pelajaran (Pencarian fleksibel sebagian karakter / case-insensitive)
+      // B. Filter Pelajaran
       const mapelTarget = String(item.pelajaran || '').toLowerCase().trim();
       const mapelFilter = fPelajaran.toLowerCase().trim();
       const matchPelajaran = (fPelajaran === "Semua" || mapelTarget.includes(mapelFilter) || mapelFilter.includes(mapelTarget));
       
-      // C. Filter Status Belajar (Membaca teks murni ataupun emoji pendukung)
+      // C. Filter Status Belajar
       let matchStatus = false;
       if (fStatus === "Semua") {
         matchStatus = true;
@@ -84,16 +90,16 @@ const aplikasi = {
       return matchKelas && matchPelajaran && matchStatus;
     });
 
-    // PENGAMAN BERDASARKAN LIFE-CYCLE LOAD PERTAMA
+    // PENGAMAN LIFE-CYCLE: Hanya bypass semua data jika ini benar-benar loading pertama kali aplikasi dibuka
     if (this.isFirstLoad && filtered.length === 0 && this.masterData.length > 0) {
       console.warn("Kondisi awal tidak sinkron, menampilkan seluruh data asli.");
       filtered = this.masterData;
     }
     
-    // Matikan status load pertama setelah filter dijalankan atau diubah manual oleh pengguna
+    // Setelah eksekusi pertama selesai, kunci isFirstLoad ke false secara permanen
     this.isFirstLoad = false;
 
-    // Perbarui Angka Statistik Real-time Dashboard KBM
+    // Perbarui Angka Statistik Real-time
     const total = filtered.length;
     const selesai = filtered.filter(i => {
       const s = String(i.status || '').toLowerCase();
@@ -118,7 +124,6 @@ const aplikasi = {
     if(!tbody) return;
     tbody.innerHTML = "";
 
-    // Jika benar-benar tidak ada data yang cocok setelah difilter oleh user
     if (filtered.length === 0) {
       if(emptyState) emptyState.classList.remove('hidden');
       return;
@@ -126,7 +131,7 @@ const aplikasi = {
       if(emptyState) emptyState.classList.add('hidden');
     }
 
-    // Render baris data ke dalam tabel HTML
+    // Render baris data ke tabel HTML
     filtered.forEach((item) => {
       const tr = document.createElement('tr');
       const sStr = String(item.status || '').toLowerCase();
