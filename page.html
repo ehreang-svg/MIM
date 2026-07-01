@@ -1242,3 +1242,103 @@ placeholder="Masukkan NISN">
     </button>
 
 </div>
+
+<div id="materiPage" class="hidden page">
+<button class="btn-small btn-back" onclick="goBack()">⬅ Kembali</button>
+
+<title>Dashboard Belajar Mandiri SD</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
+    .loader { border-top-color: #1f497d; animation: spinner 1.5s linear infinite; }
+    @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="p-4 md:p-8">
+
+  <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-6">
+    <div class="border-b pb-4 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-800">🎯 Ruang Belajar Mandiri</h1>
+        <p class="text-sm text-slate-500">Pelacakan kurikulum materi Kelas 1 - 6 SD secara real-time terintegrasi Spreadsheet</p>
+      </div>
+      <div id="loadingStatus" class="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-lg text-sm font-medium text-slate-600">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-5 w-5"></div>
+        <span>Memuat data dari Spreadsheet...</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 bg-slate-50 p-4 rounded-lg border">
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Pilih Kelas</label>
+        <select id="filterKelas" onchange="aplikasi.filterDanTampilkan()" class="w-full bg-white border border-slate-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="Semua">Semua Kelas (1-6)</option>
+          <option value="1">Kelas 1</option>
+          <option value="2">Kelas 2</option>
+          <option value="3">Kelas 3</option>
+          <option value="4">Kelas 4</option>
+          <option value="5">Kelas 5</option>
+          <option value="6">Kelas 6</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Mata Pelajaran</label>
+        <select id="filterPelajaran" onchange="aplikasi.filterDanTampilkan()" class="w-full bg-white border border-slate-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="Semua">Semua Pelajaran</option>
+          <option value="Matematika">Matematika</option>
+          <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+          <option value="IPA (IPAS)">IPA (IPAS)</option>
+          <option value="IPS (IPAS)">IPS (IPAS)</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Status Progress</label>
+        <select id="filterStatus" onchange="aplikasi.filterDanTampilkan()" class="w-full bg-white border border-slate-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="Semua">Semua Status</option>
+          <option value="🔴 Belum">🔴 Belum</option>
+          <option value="🟡 Proses">🟡 Proses</option>
+          <option value="🟢 Selesai">🟢 Selesai</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 text-center">
+      <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+        <div class="text-xs text-blue-600 font-bold uppercase">Total Materi</div>
+        <div id="statTotal" class="text-xl font-bold text-slate-800">0</div>
+      </div>
+      <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+        <div class="text-xs text-green-600 font-bold uppercase">Selesai</div>
+        <div id="statSelesai" class="text-xl font-bold text-slate-800">0</div>
+      </div>
+      <div class="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+        <div class="text-xs text-yellow-600 font-bold uppercase">Dalam Proses</div>
+        <div id="statProses" class="text-xl font-bold text-slate-800">0</div>
+      </div>
+      <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-200">
+        <div class="text-xs text-indigo-600 font-bold uppercase">Persentase</div>
+        <div id="statPersen" class="text-xl font-bold text-slate-800">0%</div>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto rounded-lg border border-slate-200">
+      <table class="w-full text-left border-collapse bg-white">
+        <thead>
+          <tr class="bg-slate-800 text-white text-xs uppercase font-semibold">
+            <th class="py-3 px-4 text-center w-16">Kelas</th>
+            <th class="py-3 px-4 w-40">Mata Pelajaran</th>
+            <th class="py-3 px-4">Topik / Bab Materi</th>
+            <th class="py-3 px-4 w-44 text-center">Status Belajar</th>
+            <th class="py-3 px-4 w-60">Sumber / Catatan</th>
+          </tr>
+        </thead>
+        <tbody id="tabelMateriBody" class="text-sm text-slate-700 divide-y divide-slate-200">
+          </tbody>
+      </table>
+    </div>
+
+    <div id="emptyState" class="hidden text-center py-12 text-slate-500">
+      📭 Tidak ada materi yang cocok dengan kombinasi filter pilihan Anda.
+    </div>
+
+  </div>
