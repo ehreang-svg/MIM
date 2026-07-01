@@ -25,6 +25,7 @@ const pages = [
     "editIdentitasPage",
     "dataSiswaPage",
     "exportIdentitasPage",
+   "materiPage",
      "raportMDPage"
 ];
 /* ===========================
