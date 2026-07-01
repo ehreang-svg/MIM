@@ -72,23 +72,21 @@ const aplikasi = {
           tr.className = index % 2 === 0 ? 'bg-white hover:bg-slate-50 transition' : 'bg-slate-50/50 hover:bg-slate-50 transition';
           
           tr.innerHTML = `
-            <td class="py-3 px-4 text-center font-bold text-slate-600">${item.kelas}</td>
-            <td class="py-3 px-4 font-semibold text-slate-700">${item.pelajaran}</td>
-            <td class="py-3 px-4 text-slate-800 font-medium">${item.materi}</td>
-            <td class="py-3 px-4 text-center">
-              <select onchange="aplikasi.ubahStatus(${item.rowNumber}, this.value)" class="w-full text-sm rounded border border-slate-300 p-1 bg-white focus:ring-1 focus:ring-blue-500">
-                <option value="🔴 Belum" ${item.status === '🔴 Belum' ? 'selected':''}>🔴 Belum</option>
-                <option value="🟡 Proses" ${item.status === '🟡 Proses' ? 'selected':''}>🟡 Proses</option>
-                <option value="🟢 Selesai" ${item.status === '🟢 Selesai' ? 'selected':''}>🟢 Selesai</option>
-              </select>
-            </td>
-            <td class="py-3 px-4">
-              <input type="text" value="${item.catatan}" placeholder="Link materi / catatan kecil" 
-                     onchange="aplikasi.ubahCatatan(${item.rowNumber}, this.value)"
-                     class="w-full text-xs p-1.5 border border-slate-200 rounded focus:outline-none focus:border-blue-400">
-            </td>
-          `;
-          tbody.appendChild(tr);
+  <td class="rbm-text-center rbm-w-kelas">${item.kelas}</td>
+  <td class="rbm-w-pelajaran">${item.pelajaran}</td>
+  <td class="rbm-w-materi">${item.materi}</td>
+  <td class="rbm-text-center">
+    <select onchange="aplikasi.ubahStatus(${item.rowNumber}, this.value)" class="rbm-status-select">
+      <option value="🔴 Belum" ${item.status.includes('Belum') ? 'selected':''}>🔴 Belum</option>
+      <option value="🟡 Proses" ${item.status.includes('Proses') || item.status.includes('Dibaca') ? 'selected':''}>🟡 Proses</option>
+      <option value="🟢 Selesai" ${item.status.includes('Selesai') || item.status.includes('Paham') ? 'selected':''}>🟢 Selesai</option>
+    </select>
+  </td>
+  <td>
+    <input type="text" value="${item.catatan}" placeholder="Tambahkan link / catatan..." 
+           onchange="aplikasi.ubahCatatan(${item.rowNumber}, this.value)" class="rbm-catatan-input">
+  </td>
+`;          tbody.appendChild(tr);
         });
       },
 
