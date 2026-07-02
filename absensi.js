@@ -118,6 +118,7 @@ async function submitAbsen(){
                     foto = await toBase64(file);
                 }
 
+                // Membuat objek payload data absensi
                 const payload = {
                     action: "absenGuru",
                     jenis: jenis,
@@ -132,21 +133,22 @@ async function submitAbsen(){
                     foto: foto
                 };
 
-                const formData = new FormData();
-                Object.keys(payload).forEach(key => {
-                    formData.append(key, payload[key]);
-                });
-
+                // --- PERBAIKAN CORS DI SINI ---
+                // Mengirim sebagai string JSON murni untuk menghindari preflight check/CORS block
                 const response = await fetch(ABSEN_API, {
                     method: "POST",
-                    body: formData
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify(payload)
                 });
 
                 const data = await response.json();
 
                 if(data.status){
                     alert(data.message);
-                    document.getElementById("fotoAbsen").value = "";
+                    const fotoInput = document.getElementById("fotoAbsen");
+                    if(fotoInput) fotoInput.value = "";
                 }else{
                     alert(data.message);
                 }
@@ -192,7 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
-
 /* ================= REKAP GURU ================= */
 
 let rekapGuruData = [];
